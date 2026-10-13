@@ -22,7 +22,7 @@ that does not need FreeRTOS lives in `lib/patterns_core/` and is unit-tested on 
 | Env | Pattern | Use it when | Knob to break it | In [queen-bee-incubator](https://github.com/Mariam-zeqred/queen-bee-incubator) |
 |---|---|---|---|---|
 | `01_queue` | producer/consumer queue | one task samples at a fixed rate, another consumes in bursts (SD, cloud) | `Q_LENGTH 8` loses readings during a flush; 16 does not | `RingBuffer` (60 slots) filled by Control, drained once a minute by Datalog |
-| `02_mutex` | mutex-guarded shared state | several tasks read and write one struct | `LOCKING 0` counts torn reads | `SharedState` module, `MUTEX_LOCK_TIMEOUT_MS 100`; `Interlock` is the single writer of the heater and fan outputs |
+| `02_mutex` | mutex-guarded shared state | several tasks read and write one struct | `LOCKING 0` counts torn reads | `SharedState` module, `MUTEX_LOCK_TIMEOUT_MS 100`; `Interlock` decides from it whether the heater and fan may run |
 | `03_event_group` | event group for startup | bring-up steps run in parallel, some may fail, workers must not start early | `STORAGE_PRESENT 0` → run degraded; `SENSOR_PRESENT 0` → halt | not used: its `setup()` brings modules up one after another, fan relay first |
 | `04_timer_vs_task` | software timer vs task | short periodic work (timer) vs work that may block (task) | `TIMER_B_BLOCK_MS 300` makes every timer jitter; `TASK_OVERRUN_MS 1200` shows `missed` without drift | tasks only, at fixed rates (1 Hz control, 10 Hz safety, 5 Hz display) |
 | `05_task_watchdog` | task watchdog + stalled task | a task that silently stops must reboot the device | `STALL_MODE` 0 spins, 1 blocks forever | Control and Safety subscribe, `TASK_WDT_TIMEOUT_S 30` |
@@ -108,7 +108,7 @@ not been run on a board yet (see Limitations).
 ```
 platformio.ini            six esp32dev envs (one per sketch) + native
 include/Config.h          every knob, grouped per sketch
-src/01_queue … 06_core_pinning/main.cpp   one pattern per folder, ~70–120 lines each
+src/01_queue … 06_core_pinning/main.cpp   one pattern per folder, ~65–120 lines each
 lib/patterns_core/        Stats, Hysteresis, Startup, Periodic, SoftWatchdog (no Arduino)
 test/test_native/         host unit tests; test/minitest.h; test/test_custom_runner.py for pio
 Makefile                  make check / build / clean

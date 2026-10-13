@@ -7,7 +7,7 @@
 // LOCK_TIMEOUT_MS is counted instead of silently blocking forever.
 //
 // The queen-bee incubator's SharedState module is this pattern with more fields; its
-// Interlock is the one writer allowed to touch the heater and fan outputs, which is why a
+// Interlock decides from that state whether the heater and fan may run, which is why a
 // torn or stale read there matters.
 //
 // LOCKING 0 removes the mutex: `seq` and `seq_copy` are written together by the sensor,
