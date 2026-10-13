@@ -2,8 +2,10 @@
 
 int SoftWatchdog::add(const char* name, uint32_t now_ms) {
   for (int i = 0; i < kMaxTasks; i++) {
-    if (!entries[i].used) {
-      entries[i] = {name, now_ms, true};
+    if (!entries[i].used) {  // field by field: the Arduino toolchain compiles as C++11
+      entries[i].name = name;
+      entries[i].last_kick = now_ms;
+      entries[i].used = true;
       return i;
     }
   }

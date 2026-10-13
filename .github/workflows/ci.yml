@@ -13,6 +13,7 @@ jobs:
   firmware-build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         env: [01_queue, 02_mutex, 03_event_group, 04_timer_vs_task, 05_task_watchdog, 06_core_pinning]
     steps:
