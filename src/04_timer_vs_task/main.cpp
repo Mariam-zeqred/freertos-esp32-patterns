@@ -52,8 +52,9 @@ static void task_c(void*) {
     expected_us += (int64_t)BLINK_PERIOD_MS * 1000;
     g_task_jitter.add(llabs(esp_timer_get_time() - expected_us));
     if (TASK_OVERRUN_MS && ++cycle % TASK_OVERRUN_EVERY == 0) burn_ms(TASK_OVERRUN_MS);
-    uint32_t sleep = g_task_sched.schedule(millis());  // bookkeeping only; the delay above drives timing
-    if (sleep == 0) {  // overran: vTaskDelayUntil will also return immediately, resync our reference
+    uint32_t overruns_before = g_task_sched.overruns;
+    g_task_sched.schedule(millis());  // bookkeeping only; the delay above drives timing
+    if (g_task_sched.overruns != overruns_before) {  // overran: vTaskDelayUntil returned at once, resync
       last_wake = xTaskGetTickCount();
       expected_us = esp_timer_get_time();
     }
