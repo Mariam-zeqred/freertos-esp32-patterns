@@ -1,0 +1,7 @@
+{
+  "name": "patterns_core",
+  "version": "0.1.0",
+  "description": "Hardware-free logic used by the six FreeRTOS pattern sketches: stats, hysteresis, startup decision, drift-free periods, a software watchdog model",
+  "frameworks": "*",
+  "platforms": "*"
+}

@@ -1,0 +1,14 @@
+# secrets (none needed by these sketches, but keep the pattern)
+include/secrets.h
+.env
+
+# build output
+.pio/
+build/
+__pycache__/
+*.pyc
+
+# editors
+.vscode/
+.idea/
+*.swp
